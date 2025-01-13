@@ -43,6 +43,7 @@ public class Item implements IZUGFeRDExportableItem {
 	protected ArrayList<IZUGFeRDAllowanceCharge> totalAllowances = new ArrayList<>();
 	protected ArrayList<IZUGFeRDAllowanceCharge> Charges = new ArrayList<>();
 	protected List<IncludedNote> includedNotes = null;
+	protected String accountingReference;
 	//protected HashMap<String, String> attributes = new HashMap<>();
 
 	/***
@@ -181,6 +182,8 @@ public class Item implements IZUGFeRDExportableItem {
 			}
 
 			icnm.getAllNodes("AdditionalReferencedDocument").map(ReferencedDocument::fromNode).forEach(this::addAdditionalReference);
+
+			icnm.getAsString("ReceivableSpecifiedTradeAccountingAccount").ifPresent(s -> this.accountingReference = s == null ? null : s.trim());
 		});
 
 		itemMap.getAsNodeMap("AssociatedDocumentLineDocument").ifPresent(adld -> {
@@ -513,5 +516,10 @@ public class Item implements IZUGFeRDExportableItem {
 	@Override
 	public List<IncludedNote> getNotesWithSubjectCode() {
 		return includedNotes;
+	}
+
+	@Override
+	public String getAccountingReference() {
+		return accountingReference;
 	}
 }
